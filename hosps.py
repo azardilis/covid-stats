@@ -10,7 +10,7 @@ def plot_cases_hosps(d, country_name, vacc_perc=50):
               .mean()
               .weekly_hosp_admissions_per_million)
     casess = (dd.groupby([pd.Grouper(key='date', freq='W')])
-              .mean()
+              .sum()
               .new_cases_per_million)
 
     fig, ax1 = plt.subplots(figsize=(9, 5))
@@ -37,12 +37,33 @@ def plot_cases_hosps(d, country_name, vacc_perc=50):
     fig.tight_layout()
 
     plt.show()
-    
+
+def plot_hosp_rate(d, country_name, vacc_perc=50):
+    dd = d[d.location == country_name].copy()
+    dd.date = pd.to_datetime(dd.date)
+    dd = dd[dd.date > '2021-01-01']
+
+    hospss = (dd.groupby([pd.Grouper(key='date', freq='W')])
+              .mean()
+              .weekly_hosp_admissions_per_million)
+    casess = (dd.groupby([pd.Grouper(key='date', freq='W')])
+              .sum()
+              .new_cases_per_million)
+
+    fig, ax = plt.subplots(figsize=(9, 5))
+    color = 'tab:blue'
+    ax.set_xlabel('date')
+    ax.set_ylabel('hosp rate', color=color)
+    ax.plot(hospss/casess, color=color)
+
+    plt.show()
+
     
 def go(country_name):
     d = pd.read_csv("owid-covid-data.csv")
-    plot_cases_hosps(d, country_name)
+    plot_hosp_rate(d, country_name)
 
 
 if __name__ == "__main__":
+    go("United Kingdom")
     go("Cyprus")
