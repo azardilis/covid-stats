@@ -1,5 +1,6 @@
 import numpy as np
 import datetime
+import pandas as pd
 
 
 def dict_to_val(d):
@@ -67,3 +68,33 @@ def get_covid_data(country_name="Cyprus"):
     vacss = dd.groupby([pd.Grouper(key="date", freq="W-MON")]).sum().new_vaccinations
 
     return casess, deathss, vacss
+
+
+
+def plot_deaths_cases(all_ds, covid_data):
+    casess, deathss, vacss = covid_data
+    all_ds = pd.DataFrame(all_ds.rename("all_deaths"))
+    deathss = pd.DataFrame(deathss)
+
+    dd = deathss.join(all_ds)
+    non_covid_deaths = dd["all_deaths"] - dd["new_deaths"]
+
+    
+    fig, ax1 = plt.subplots()
+
+    color = 'tab:red'
+    ax1.set_xlabel('date')
+    ax1.set_ylabel('non-covid deaths', color=color)
+    ax1.plot(non_covid_deaths, color=color)
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    ax2 = ax1.twinx()
+
+    color = 'tab:blue'
+    ax2.set_ylabel('covid cases', color=color)
+    ax2.plot(casess, color=color)
+    ax2.tick_params(axis='y', labelcolor=color)
+
+    fig.tight_layout()
+    plt.show()
+
