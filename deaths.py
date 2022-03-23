@@ -1,6 +1,7 @@
 import numpy as np
 import datetime
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def dict_to_val(d):
@@ -70,7 +71,6 @@ def get_covid_data(country_name="Cyprus"):
     return casess, deathss, vacss
 
 
-
 def plot_deaths_cases(all_ds, covid_data):
     casess, deathss, vacss = covid_data
     all_ds = pd.DataFrame(all_ds.rename("all_deaths"))
@@ -97,4 +97,7 @@ def plot_deaths_cases(all_ds, covid_data):
 
     fig.tight_layout()
     plt.show()
+
+
+
 
